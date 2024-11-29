@@ -1,4 +1,4 @@
-package com.uber.UberApp;
+package com.uber.uberapp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
