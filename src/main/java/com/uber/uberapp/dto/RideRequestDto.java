@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.locationtech.jts.geom.Point;
 
 @Data
 @NoArgsConstructor
@@ -15,15 +14,15 @@ public class RideRequestDto {
 
   private Long id;
 
-  private Point pickupLocation;
+  private PointDto pickupLocation;
 
-  private Point dropOffLocation;
+  private PointDto dropOffLocation;
+
+  private PaymentMethod paymentMethod;
 
   private LocalDateTime requestedTime;
 
   private RiderDto rider;
-
-  private PaymentMethod paymentMethod;
 
   private RideRequestStatus rideRequestStatus;
 }

@@ -6,9 +6,7 @@ import com.uber.uberapp.dto.RideRequestDto;
 import com.uber.uberapp.dto.RiderDto;
 import com.uber.uberapp.services.RiderService;
 import java.util.List;
-import org.springframework.stereotype.Service;
 
-@Service
 public class RideServiceImpl implements RiderService {
   @Override
   public RideRequestDto requestRide(RideRequestDto rideId) {
