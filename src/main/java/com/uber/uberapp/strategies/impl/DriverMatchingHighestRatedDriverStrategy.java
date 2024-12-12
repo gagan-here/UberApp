@@ -1,7 +1,7 @@
 package com.uber.uberapp.strategies.impl;
 
-import com.uber.uberapp.dto.RideRequestDto;
 import com.uber.uberapp.entities.Driver;
+import com.uber.uberapp.entities.RideRequest;
 import com.uber.uberapp.strategies.DriverMatchingStrategy;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class DriverMatchingHighestRatedDriverStrategy implements DriverMatchingStrategy {
   @Override
-  public List<Driver> findMatchingDriver(RideRequestDto rideRequestDto) {
+  public List<Driver> findMatchingDriver(RideRequest rideRequest) {
     return List.of();
   }
 }
