@@ -5,8 +5,11 @@ import com.uber.uberapp.dto.RideDto;
 import com.uber.uberapp.dto.RideRequestDto;
 import com.uber.uberapp.dto.RiderDto;
 import com.uber.uberapp.entities.RideRequest;
+import com.uber.uberapp.entities.Rider;
+import com.uber.uberapp.entities.User;
 import com.uber.uberapp.entities.enums.RideRequestStatus;
 import com.uber.uberapp.repositories.RideRequestRepository;
+import com.uber.uberapp.repositories.RiderRepository;
 import com.uber.uberapp.services.RiderService;
 import com.uber.uberapp.strategies.DriverMatchingStrategy;
 import com.uber.uberapp.strategies.RideFareCalculationStrategy;
@@ -25,6 +28,7 @@ public class RiderServiceImpl implements RiderService {
   private final RideFareCalculationStrategy rideFareCalculationStrategy;
   private final DriverMatchingStrategy driverMatchingStrategy;
   private final RideRequestRepository rideRequestRepository;
+  private final RiderRepository riderRepository;
 
   @Override
   public RideRequestDto requestRide(RideRequestDto rideRequestDto) {
@@ -59,5 +63,11 @@ public class RiderServiceImpl implements RiderService {
   @Override
   public List<RideDto> getAllMyRides() {
     return List.of();
+  }
+
+  @Override
+  public Rider createNewRider(User user) {
+    Rider rider = Rider.builder().user(user).rating(0.0).build();
+    return riderRepository.save(rider);
   }
 }
