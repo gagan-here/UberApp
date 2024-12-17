@@ -9,6 +9,7 @@ import com.uber.uberapp.exceptions.RunTimeConflictException;
 import com.uber.uberapp.repositories.UserRepository;
 import com.uber.uberapp.services.AuthService;
 import com.uber.uberapp.services.RiderService;
+import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -29,12 +30,12 @@ public class AuthServiceImpl implements AuthService {
 
   @Override
   public UserDto signup(SignupDto signupDto) {
-    userRepository
-        .findByEmail(signupDto.getEmail())
-        .orElseThrow(
-            () ->
-                new RunTimeConflictException(
-                    "Cannot signup, User already exists with email " + signupDto.getEmail()));
+    Optional<User> user = userRepository.findByEmail(signupDto.getEmail());
+
+    if (user.isPresent()) {
+      throw new RunTimeConflictException(
+          "Cannot signup, User already exists with email " + signupDto.getEmail());
+    }
 
     User mappedUser = modelMapper.map(signupDto, User.class);
     mappedUser.setRoles(Set.of(Role.RIDER));
