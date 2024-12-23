@@ -8,11 +8,11 @@ import com.uber.uberapp.entities.RideRequest;
 import com.uber.uberapp.entities.Rider;
 import com.uber.uberapp.entities.User;
 import com.uber.uberapp.entities.enums.RideRequestStatus;
+import com.uber.uberapp.exceptions.ResourceNotFoundException;
 import com.uber.uberapp.repositories.RideRequestRepository;
 import com.uber.uberapp.repositories.RiderRepository;
 import com.uber.uberapp.services.RiderService;
-import com.uber.uberapp.strategies.DriverMatchingStrategy;
-import com.uber.uberapp.strategies.RideFareCalculationStrategy;
+import com.uber.uberapp.strategies.RideStrategyManager;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,22 +25,22 @@ import org.springframework.stereotype.Service;
 public class RiderServiceImpl implements RiderService {
 
   private final ModelMapper modelMapper;
-  private final RideFareCalculationStrategy rideFareCalculationStrategy;
-  private final DriverMatchingStrategy driverMatchingStrategy;
+  private final RideStrategyManager rideStrategyManager;
   private final RideRequestRepository rideRequestRepository;
   private final RiderRepository riderRepository;
 
   @Override
   public RideRequestDto requestRide(RideRequestDto rideRequestDto) {
+    Rider rider = getCurrentRider();
     RideRequest rideRequest = modelMapper.map(rideRequestDto, RideRequest.class);
     rideRequest.setRideRequestStatus(RideRequestStatus.PENDING);
 
-    Double fare = rideFareCalculationStrategy.calculateFare(rideRequest);
+    Double fare = rideStrategyManager.rideFareCalculationStrategy().calculateFare(rideRequest);
     rideRequest.setFare(fare);
 
     RideRequest saveRideRequest = rideRequestRepository.save(rideRequest);
 
-    driverMatchingStrategy.findMatchingDriver(rideRequest);
+    rideStrategyManager.driverMatchingStrategy(rider.getRating()).findMatchingDriver(rideRequest);
 
     return modelMapper.map(saveRideRequest, RideRequestDto.class);
   }
@@ -69,5 +69,13 @@ public class RiderServiceImpl implements RiderService {
   public Rider createNewRider(User user) {
     Rider rider = Rider.builder().user(user).rating(0.0).build();
     return riderRepository.save(rider);
+  }
+
+  @Override
+  public Rider getCurrentRider() {
+    // TODO : implement Spring security
+    return riderRepository
+        .findById(1l)
+        .orElseThrow(() -> new ResourceNotFoundException("Rider not found with id: " + 1));
   }
 }
