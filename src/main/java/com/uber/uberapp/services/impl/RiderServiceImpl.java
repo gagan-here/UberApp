@@ -4,6 +4,7 @@ import com.uber.uberapp.dto.DriverDto;
 import com.uber.uberapp.dto.RideDto;
 import com.uber.uberapp.dto.RideRequestDto;
 import com.uber.uberapp.dto.RiderDto;
+import com.uber.uberapp.entities.Driver;
 import com.uber.uberapp.entities.RideRequest;
 import com.uber.uberapp.entities.Rider;
 import com.uber.uberapp.entities.User;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,17 +32,24 @@ public class RiderServiceImpl implements RiderService {
   private final RiderRepository riderRepository;
 
   @Override
+  @Transactional
   public RideRequestDto requestRide(RideRequestDto rideRequestDto) {
     Rider rider = getCurrentRider();
     RideRequest rideRequest = modelMapper.map(rideRequestDto, RideRequest.class);
     rideRequest.setRideRequestStatus(RideRequestStatus.PENDING);
+    rideRequest.setRider(rider);
 
     Double fare = rideStrategyManager.rideFareCalculationStrategy().calculateFare(rideRequest);
     rideRequest.setFare(fare);
 
     RideRequest saveRideRequest = rideRequestRepository.save(rideRequest);
 
-    rideStrategyManager.driverMatchingStrategy(rider.getRating()).findMatchingDriver(rideRequest);
+    List<Driver> drivers =
+        rideStrategyManager
+            .driverMatchingStrategy(rider.getRating())
+            .findMatchingDriver(rideRequest);
+
+    // TODO : Send notification to all the drivers about this ride request
 
     return modelMapper.map(saveRideRequest, RideRequestDto.class);
   }
