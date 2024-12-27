@@ -27,7 +27,7 @@ public class RideStrategyManager {
   }
 
   public RideFareCalculationStrategy rideFareCalculationStrategy() {
-    // 6PM to 9PM
+    // 6PM to 9PM is SURGE TIME
     LocalTime surgeStartTime = LocalTime.of(18, 0);
     LocalTime surgeEndTime = LocalTime.of(21, 0);
     LocalTime currentTime = LocalTime.now();

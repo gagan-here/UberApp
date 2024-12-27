@@ -6,7 +6,7 @@ import com.uber.uberapp.dto.RiderDto;
 import java.util.List;
 
 public interface DriverService {
-  RideDto acceptRide(Long rideId);
+  RideDto acceptRide(Long rideRequestId);
 
   RideDto cancelRide(Long rideId);
 
