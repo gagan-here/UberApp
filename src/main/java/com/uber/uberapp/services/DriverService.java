@@ -3,6 +3,7 @@ package com.uber.uberapp.services;
 import com.uber.uberapp.dto.DriverDto;
 import com.uber.uberapp.dto.RideDto;
 import com.uber.uberapp.dto.RiderDto;
+import com.uber.uberapp.entities.Driver;
 import java.util.List;
 
 public interface DriverService {
@@ -19,4 +20,6 @@ public interface DriverService {
   DriverDto getMyProfile();
 
   List<RideDto> getAllMyRides();
+
+  Driver getCurrentDriver();
 }
