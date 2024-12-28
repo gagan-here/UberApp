@@ -4,14 +4,17 @@ import com.uber.uberapp.dto.DriverDto;
 import com.uber.uberapp.dto.RideDto;
 import com.uber.uberapp.dto.RiderDto;
 import com.uber.uberapp.entities.Driver;
+import com.uber.uberapp.entities.Ride;
 import com.uber.uberapp.entities.RideRequest;
 import com.uber.uberapp.entities.enums.RideRequestStatus;
 import com.uber.uberapp.exceptions.ResourceNotFoundException;
 import com.uber.uberapp.repositories.DriverRepository;
 import com.uber.uberapp.services.DriverService;
 import com.uber.uberapp.services.RideRequestService;
+import com.uber.uberapp.services.RideService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +24,8 @@ public class DriverServiceImpl implements DriverService {
 
   private final RideRequestService rideRequestService;
   private final DriverRepository driverRepository;
+  private final RideService rideService;
+  private final ModelMapper modelMapper;
 
   @Override
   @Transactional
@@ -36,9 +41,8 @@ public class DriverServiceImpl implements DriverService {
       throw new RuntimeException("Driver cannot accept ride due to unavaliability");
     }
 
-    rideRequest.setRideRequestStatus(RideRequestStatus.CONFIRMED);
-
-    return null;
+    Ride ride = rideService.createNewRide(rideRequest, currentDriver);
+    return modelMapper.map(ride, RideDto.class);
   }
 
   @Override
