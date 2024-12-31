@@ -1,6 +1,5 @@
 package com.uber.uberapp.services.impl;
 
-import com.uber.uberapp.dto.RideRequestDto;
 import com.uber.uberapp.entities.Driver;
 import com.uber.uberapp.entities.Ride;
 import com.uber.uberapp.entities.RideRequest;
@@ -31,9 +30,6 @@ public class RideServiceImpl implements RideService {
         .findById(rideId)
         .orElseThrow(() -> new ResourceNotFoundException("Ride not found with id: " + rideId));
   }
-
-  @Override
-  public void matchWithDrivers(RideRequestDto rideRequestDto) {}
 
   @Override
   public Ride createNewRide(RideRequest rideRequest, Driver driver) {
