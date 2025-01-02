@@ -1,8 +1,8 @@
 package com.uber.uberapp.services;
 
-import com.uber.uberapp.dto.WalletTransactionDto;
+import com.uber.uberapp.entities.WalletTransaction;
 
 public interface WalletTransactionService {
 
-  void createNewWalletTransaction(WalletTransactionDto walletTransactionDto);
+  void createNewWalletTransaction(WalletTransaction walletTransaction);
 }

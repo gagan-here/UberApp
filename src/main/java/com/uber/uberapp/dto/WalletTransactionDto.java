@@ -4,10 +4,12 @@ import com.uber.uberapp.entities.enums.TransactionMethod;
 import com.uber.uberapp.entities.enums.TransactionType;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
+import lombok.Builder;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 @Data
+@Builder
 public class WalletTransactionDto {
   private Long id;
 
