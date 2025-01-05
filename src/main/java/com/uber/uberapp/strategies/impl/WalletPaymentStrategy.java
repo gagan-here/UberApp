@@ -3,7 +3,9 @@ package com.uber.uberapp.strategies.impl;
 import com.uber.uberapp.entities.Driver;
 import com.uber.uberapp.entities.Payment;
 import com.uber.uberapp.entities.Rider;
+import com.uber.uberapp.entities.enums.PaymentStatus;
 import com.uber.uberapp.entities.enums.TransactionMethod;
+import com.uber.uberapp.services.PaymentService;
 import com.uber.uberapp.services.WalletService;
 import com.uber.uberapp.strategies.PaymentStrategy;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class WalletPaymentStrategy implements PaymentStrategy {
   private final WalletService walletService;
+  private final PaymentService paymentService;
 
   @Override
   @Transactional
@@ -32,5 +35,7 @@ public class WalletPaymentStrategy implements PaymentStrategy {
 
     walletService.addMoneyToWallet(
         driver.getUser(), driversCut, null, payment.getRide(), TransactionMethod.RIDE);
+
+    paymentService.updatePaymentStatus(payment, PaymentStatus.CONFIRMED);
   }
 }

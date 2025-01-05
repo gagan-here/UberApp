@@ -2,9 +2,12 @@ package com.uber.uberapp.services;
 
 import com.uber.uberapp.entities.Payment;
 import com.uber.uberapp.entities.Ride;
+import com.uber.uberapp.entities.enums.PaymentStatus;
 
 public interface PaymentService {
-  void processPayment(Payment payment);
+  void processPayment(Ride ride);
 
-  Payment createPayment(Ride ride);
+  Payment createNewPayment(Ride ride);
+
+  void updatePaymentStatus(Payment payment, PaymentStatus status);
 }
