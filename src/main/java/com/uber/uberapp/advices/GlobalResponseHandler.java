@@ -25,6 +25,9 @@ public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
       Class<? extends HttpMessageConverter<?>> selectedConverterType,
       ServerHttpRequest request,
       ServerHttpResponse response) {
+
+    if (request.getURI().getPath().contains("/v3/api-docs")) return body;
+
     if (body instanceof ApiResponse<?>) {
       return body;
     }
