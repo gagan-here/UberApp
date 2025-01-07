@@ -4,13 +4,18 @@ import com.uber.uberapp.dto.DriverDto;
 import com.uber.uberapp.dto.RatingDto;
 import com.uber.uberapp.dto.RideDto;
 import com.uber.uberapp.dto.RideRequestDto;
+import com.uber.uberapp.dto.RiderDto;
 import com.uber.uberapp.services.RiderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -33,5 +38,18 @@ public class RiderController {
   @PostMapping("/rateDriver")
   public ResponseEntity<DriverDto> rateDriver(@RequestBody RatingDto ratingDto) {
     return ResponseEntity.ok(riderService.rateDriver(ratingDto.getRideId(), ratingDto.getRating()));
+  }
+
+  @GetMapping("/getMyProfile")
+  public ResponseEntity<RiderDto> getMyProfile() {
+    return ResponseEntity.ok(riderService.getMyProfile());
+  }
+
+  @GetMapping("/getMyRides")
+  public ResponseEntity<Page<RideDto>> getAllMyRides(
+      @RequestParam(defaultValue = "0") Integer pageOffset,
+      @RequestParam(defaultValue = "10", required = false) Integer pageSize) {
+    PageRequest pageRequest = PageRequest.of(pageOffset, pageSize);
+    return ResponseEntity.ok(riderService.getAllMyRides(pageRequest));
   }
 }
