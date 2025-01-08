@@ -9,6 +9,7 @@ import com.uber.uberapp.services.DriverService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -60,7 +61,8 @@ public class DriverController {
   public ResponseEntity<Page<RideDto>> getAllMyRides(
       @RequestParam(defaultValue = "0") Integer pageOffset,
       @RequestParam(defaultValue = "10", required = false) Integer pageSize) {
-    PageRequest pageRequest = PageRequest.of(pageOffset, pageSize);
+    PageRequest pageRequest =
+        PageRequest.of(pageOffset, pageSize, Sort.by(Sort.Direction.DESC, "createdTime", "id"));
     return ResponseEntity.ok(driverService.getAllMyRides(pageRequest));
   }
 }
