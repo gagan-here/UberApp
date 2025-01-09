@@ -10,7 +10,9 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +26,11 @@ import org.locationtech.jts.geom.Point;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(
+    indexes = {
+      @Index(name = "idx_rider", columnList = "rider_id"),
+      @Index(name = "idx_driver", columnList = "driver_id")
+    })
 public class Ride {
 
   @Id

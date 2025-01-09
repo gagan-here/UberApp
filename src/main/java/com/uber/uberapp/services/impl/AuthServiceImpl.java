@@ -3,11 +3,14 @@ package com.uber.uberapp.services.impl;
 import com.uber.uberapp.dto.DriverDto;
 import com.uber.uberapp.dto.SignupDto;
 import com.uber.uberapp.dto.UserDto;
+import com.uber.uberapp.entities.Driver;
 import com.uber.uberapp.entities.User;
 import com.uber.uberapp.entities.enums.Role;
+import com.uber.uberapp.exceptions.ResourceNotFoundException;
 import com.uber.uberapp.exceptions.RunTimeConflictException;
 import com.uber.uberapp.repositories.UserRepository;
 import com.uber.uberapp.services.AuthService;
+import com.uber.uberapp.services.DriverService;
 import com.uber.uberapp.services.RiderService;
 import com.uber.uberapp.services.WalletService;
 import java.util.Optional;
@@ -25,6 +28,7 @@ public class AuthServiceImpl implements AuthService {
 
   private final RiderService riderService;
   private final WalletService walletService;
+  private final DriverService driverService;
 
   private final ModelMapper modelMapper;
 
@@ -55,7 +59,21 @@ public class AuthServiceImpl implements AuthService {
   }
 
   @Override
-  public DriverDto onboardNewDriver(Long userId) {
-    return null;
+  public DriverDto onboardNewDriver(Long userId, String vehicleId) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+
+    if (user.getRoles().contains(Role.DRIVER))
+      throw new RunTimeConflictException("User with id " + userId + " is already a driver");
+
+    Driver createdDriver =
+        Driver.builder().user(user).rating(0.0).vehicleId(vehicleId).available(true).build();
+    user.getRoles().add(Role.DRIVER);
+    userRepository.save(user);
+
+    Driver savedDriver = driverService.createNewDriver(createdDriver);
+    return modelMapper.map(savedDriver, DriverDto.class);
   }
 }
