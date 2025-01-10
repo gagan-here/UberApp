@@ -6,7 +6,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +23,11 @@ import org.hibernate.annotations.CreationTimestamp;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(
+    indexes = {
+      @Index(name = "idx_wallet_transaction_wallet", columnList = "wallet_id"),
+      @Index(name = "idx_wallet_transaction_ride", columnList = "ride_id")
+    })
 public class WalletTransaction {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

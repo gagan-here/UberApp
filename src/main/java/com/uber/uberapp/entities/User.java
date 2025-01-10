@@ -10,13 +10,16 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "app_user")
+@Table(
+    name = "app_user",
+    indexes = {@Index(name = "idx_user_email", columnList = "email")})
 @Getter
 @Setter
 public class User {

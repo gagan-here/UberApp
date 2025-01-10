@@ -28,8 +28,8 @@ import org.locationtech.jts.geom.Point;
 @NoArgsConstructor
 @Table(
     indexes = {
-      @Index(name = "idx_rider", columnList = "rider_id"),
-      @Index(name = "idx_driver", columnList = "driver_id")
+      @Index(name = "idx_ride_rider", columnList = "rider_id"),
+      @Index(name = "idx_ride_driver", columnList = "driver_id")
     })
 public class Ride {
 

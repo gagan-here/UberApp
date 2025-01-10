@@ -1,5 +1,6 @@
 package com.uber.uberapp.advices;
 
+import java.util.List;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -26,9 +27,12 @@ public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
       ServerHttpRequest request,
       ServerHttpResponse response) {
 
-    if (request.getURI().getPath().contains("/v3/api-docs")) return body;
+    List<String> allowedRoutes = List.of("/v3/api-docs", "/actuator");
 
-    if (body instanceof ApiResponse<?>) {
+    boolean isAllowed =
+        allowedRoutes.stream().anyMatch(route -> request.getURI().getPath().contains(route));
+
+    if (body instanceof ApiResponse<?> || isAllowed) {
       return body;
     }
 
