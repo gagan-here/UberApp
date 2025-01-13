@@ -7,6 +7,7 @@ import com.uber.uberapp.entities.Rating;
 import com.uber.uberapp.entities.Ride;
 import com.uber.uberapp.entities.Rider;
 import com.uber.uberapp.exceptions.ResourceNotFoundException;
+import com.uber.uberapp.exceptions.RunTimeConflictException;
 import com.uber.uberapp.repositories.DriverRepository;
 import com.uber.uberapp.repositories.RatingRepository;
 import com.uber.uberapp.repositories.RiderRepository;
@@ -34,6 +35,10 @@ public class RatingServiceImpl implements RatingService {
                 () ->
                     new ResourceNotFoundException(
                         "Rating not found for ride with id: " + ride.getId()));
+
+    if (ratingObj.getDriverRating() != null)
+      throw new RunTimeConflictException("Driver has already been rated, cannot be rated again!");
+
     ratingObj.setDriverRating(rating);
 
     ratingRepository.save(ratingObj);
@@ -59,6 +64,9 @@ public class RatingServiceImpl implements RatingService {
                 () ->
                     new ResourceNotFoundException(
                         "Rating not found for ride with id: " + ride.getId()));
+    if (ratingObj.getDriverRating() != null)
+      throw new RunTimeConflictException("Rider has already been rated, cannot be rated again!");
+
     ratingObj.setRiderRating(rating);
 
     ratingRepository.save(ratingObj);

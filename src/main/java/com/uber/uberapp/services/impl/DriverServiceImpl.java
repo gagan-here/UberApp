@@ -12,6 +12,7 @@ import com.uber.uberapp.exceptions.ResourceNotFoundException;
 import com.uber.uberapp.repositories.DriverRepository;
 import com.uber.uberapp.services.DriverService;
 import com.uber.uberapp.services.PaymentService;
+import com.uber.uberapp.services.RatingService;
 import com.uber.uberapp.services.RideRequestService;
 import com.uber.uberapp.services.RideService;
 import java.time.LocalDateTime;
@@ -29,6 +30,7 @@ public class DriverServiceImpl implements DriverService {
   private final RideRequestService rideRequestService;
   private final RideService rideService;
   private final PaymentService paymentService;
+  private final RatingService ratingService;
 
   private final DriverRepository driverRepository;
 
@@ -96,6 +98,7 @@ public class DriverServiceImpl implements DriverService {
     Ride savedRide = rideService.updateRideStatus(ride, RideStatus.ONGOING);
 
     paymentService.createNewPayment(savedRide);
+    ratingService.createNewRaing(savedRide);
 
     return modelMapper.map(savedRide, RideDto.class);
   }
@@ -138,7 +141,7 @@ public class DriverServiceImpl implements DriverService {
           "Ride status is not Ended hence cannot start rating, status: " + ride.getRideStatus());
     }
 
-    return null;
+    return ratingService.rateRider(ride, rating);
   }
 
   @Override
