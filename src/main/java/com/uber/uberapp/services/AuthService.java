@@ -5,7 +5,7 @@ import com.uber.uberapp.dto.SignupDto;
 import com.uber.uberapp.dto.UserDto;
 
 public interface AuthService {
-  String login(String email, String password);
+  String[] login(String email, String password);
 
   UserDto signup(SignupDto signupDto);
 
