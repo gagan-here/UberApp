@@ -9,6 +9,7 @@ import com.uber.uberapp.entities.enums.Role;
 import com.uber.uberapp.exceptions.ResourceNotFoundException;
 import com.uber.uberapp.exceptions.RunTimeConflictException;
 import com.uber.uberapp.repositories.UserRepository;
+import com.uber.uberapp.security.JwtService;
 import com.uber.uberapp.services.AuthService;
 import com.uber.uberapp.services.DriverService;
 import com.uber.uberapp.services.RiderService;
@@ -17,6 +18,9 @@ import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +34,9 @@ public class AuthServiceImpl implements AuthService {
   private final RiderService riderService;
   private final WalletService walletService;
   private final DriverService driverService;
+  private final JwtService jwtService;
+
+  private final AuthenticationManager authenticationManager;
 
   private final PasswordEncoder passwordEncoder;
 
@@ -37,9 +44,16 @@ public class AuthServiceImpl implements AuthService {
 
   @Override
   public String[] login(String email, String password) {
-    String tokens[] = new String[2];
+    Authentication authentication =
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(email, password));
 
-    return tokens;
+    User user = (User) authentication.getPrincipal();
+
+    String accessToken = jwtService.generateAccessToken(user);
+    String refreshToken = jwtService.generateRefreshToken(user);
+
+    return new String[] {accessToken, refreshToken};
   }
 
   @Override

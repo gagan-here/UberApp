@@ -7,6 +7,9 @@ import com.uber.uberapp.dto.OnboardDriverDto;
 import com.uber.uberapp.dto.SignupDto;
 import com.uber.uberapp.dto.UserDto;
 import com.uber.uberapp.services.AuthService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,8 +38,17 @@ public class AuthController {
   }
 
   @PostMapping("/login")
-  ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto) {
+  ResponseEntity<LoginResponseDto> login(
+      @RequestBody LoginRequestDto loginRequestDto,
+      HttpServletRequest httpServletRequest,
+      HttpServletResponse httpServletResponse) {
     String[] tokens = authService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword());
+
+    Cookie cookie = new Cookie("token", tokens[1]);
+    cookie.setHttpOnly(true);
+
+    httpServletResponse.addCookie(cookie);
+
     return ResponseEntity.ok(new LoginResponseDto(tokens[0]));
   }
 }
