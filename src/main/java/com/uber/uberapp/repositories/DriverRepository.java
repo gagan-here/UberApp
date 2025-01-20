@@ -1,7 +1,9 @@
 package com.uber.uberapp.repositories;
 
 import com.uber.uberapp.entities.Driver;
+import com.uber.uberapp.entities.User;
 import java.util.List;
+import java.util.Optional;
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,7 +23,7 @@ public interface DriverRepository extends JpaRepository<Driver, Long> {
       value =
           "SELECT d.*, ST_Distance(d.current_location, :pickupLocation) AS distance "
               + "FROM driver d "
-              + "WHERE d.available = true AND ST_DWithin(d.curent_location, :pickupLocation, 10000) "
+              + "WHERE d.available = true AND ST_DWithin(d.current_location, :pickupLocation, 10000) "
               + "ORDER BY distance "
               + "LIMIT 10",
       nativeQuery = true)
@@ -36,4 +38,6 @@ public interface DriverRepository extends JpaRepository<Driver, Long> {
               + "LIMIT 10",
       nativeQuery = true)
   List<Driver> findTenNearbyTopRatedDrivers(Point pickupLocation);
+
+  Optional<Driver> findByUser(User user);
 }
